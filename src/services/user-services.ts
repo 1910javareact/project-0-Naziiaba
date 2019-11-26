@@ -1,21 +1,44 @@
 import { User } from "../models/user";
-import { daoGetUserByUsernameAndPassword, daoGetAllUsers, daoGetUserById } from "../repositories/user-dao";
+import { daoGetUserByUsernameAndPassword, daoGetUsers, daoGetUserById, daoUpdateUser } from "../repositories/user-dao";
 
 
-export function getUserByUsernameAndPassword(username:string, password:string){
-    //if this was for real
-    //we should be hashing and salting the password here
-    //but our api is wildly unsecure, so don't worry about
-    return daoGetUserByUsernameAndPassword(username, password)
+export function getUserByUsernameAndPassword(username:string, password:string):Promise<User>{
+    try {
+        return daoGetUserByUsernameAndPassword(username, password);
+    } catch (e) {
+        throw e;
+    }
 }
 
-export function getAllUsers():User[] {
-    // here comes functionality
-    return daoGetAllUsers()
+
+
+export function getAllUsers():Promise<User[]> {
+    try {
+        return daoGetUsers();
+    } catch (e) {
+        throw e;
+    }
 }
 
-export function getUserById(id:number):User{
-    console.log("Service: you are searching for a user " + id);
-    
-    return daoGetUserById(id)
+export function getUserById(id:number):Promise<User> {
+    try {
+        return daoGetUserById(id);
+    } catch (e) {
+        throw e;
+    }
+
+}
+export async function updateUser(req: User) {
+    try {
+        const user = await daoGetUserById(req.userId);
+        for (const key in req) {
+            if (req[key] !== undefined && user.hasOwnProperty(key)) {
+                user[key] = req[key];
+            }
+        }
+       
+        return daoUpdateUser(user);
+    } catch (e) {
+        throw e;
+    }
 }

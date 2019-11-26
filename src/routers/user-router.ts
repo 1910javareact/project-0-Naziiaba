@@ -1,34 +1,35 @@
 import express from 'express'
-import { User } from '../models/user'
+
 import { authorization } from '../middleware.ts/auth-middleware'
-import { getAllUsers, getUserById } from '../services/user-services'
+import { getAllUsers, getUserById, updateUser } from '../services/user-services'
 
 
 
 export const userRouter = express.Router()
 
 
-//an example of not using arrow functions
-function controllerGetUsers(req, res){
-    let users = getAllUsers()//this function is in services
-    if(users){        //its purpose is to process getting all gardens
+
+async function controllerGetUsers(req, res){
+    let users = await getAllUsers()
+    if(users){        
         res.json(users)
     }else{
         res.sendStatus(500)
     }
 
 }
+
 userRouter.get('', [ authorization([1]), controllerGetUsers ])
 
 
 
-userRouter.get('/:id', (req,res)=>{
-    let id = +req.params.id//from req.params, give me id
+userRouter.get('/:id', async (req,res)=>{
+    let id = +req.params.id
     if(isNaN(id)){
         res.sendStatus(400)
     }else{
         try{
-            let user = getUserById(id)
+            let user = await getUserById(id)
             res.json(user)
         }catch(e){
             res.status(e.status).send(e.message)
@@ -37,4 +38,12 @@ userRouter.get('/:id', (req,res)=>{
     }
 })
 
-userRouter.patch('', authorization([2]) )
+userRouter.patch('', [authorization([2])], async (req, res) => {
+    try {
+        const {body} = req;
+        const update = await updateUser(body);
+        res.status(200).json(update);
+    }catch (e) {
+        res.status(e.status).send(e.message);
+    }
+});

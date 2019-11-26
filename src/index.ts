@@ -1,8 +1,9 @@
 import express from 'express'
 import bodyparser from 'body-parser'
 import { userRouter } from './routers/user-router'
-//import { roleRouter } from './routers/role-router'
 import { getUserByUsernameAndPassword } from './services/user-services'
+import { sessionMiddleware } from './middleware.ts/session-middleware'
+import { reimbursementsRouter } from './routers/reimbursement-router'
 
 
 const app = express()  //this line builds the application from express
@@ -14,13 +15,13 @@ app.use(bodyparser.json())
 
 app.use(sessionMiddleware)
 
-app.post('/login', (req,res)=>{
-    let {username, password} = req.body
+app.post('/login', async (req,res)=>{
+    let {username, password} = req.body;
     if(!username || !password ){
         res.status(400).send('Invalid credentials')
     }
     try{
-        let user = getUserByUsernameAndPassword(username, password)
+        let user = await getUserByUsernameAndPassword(username, password)
         req.session.user = user
         res.json(user)//its standard to send the logged in user info after the log in
     }catch(e){
@@ -33,18 +34,12 @@ app.post('/login', (req,res)=>{
 
 app.use('/users', userRouter)
 
-
-
-
-
-
-
-
+app.use('/reimbursement', reimbursementsRouter)
 
 
 //now we need to make the server actually run
 //this means the server has to be listening for requests
-app.listen(1007, ()=>{
+app.listen(1776, ()=>{
     console.log('app has started');   
 })
 
