@@ -12,7 +12,7 @@ export function getUserByUsernameAndPassword(username:string, password:string):P
 
 
 
-export function getAllUsers():Promise<User[]> {
+export function getUsers():Promise<User[]> {
     try {
         return daoGetUsers();
     } catch (e) {
@@ -37,7 +37,8 @@ export async function updateUser(req: User) {
             }
         }
        
-        return daoUpdateUser(user);
+        await daoUpdateUser(user);
+        return user;
     } catch (e) {
         throw e;
     }

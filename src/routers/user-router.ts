@@ -1,6 +1,6 @@
 import express from 'express'
 import { authorization } from '../middleware.ts/auth-middleware'
-import { getAllUsers, getUserById, updateUser } from '../services/user-services'
+import * as userServices from '../services/user-services'
 
 
 
@@ -9,7 +9,7 @@ export const userRouter = express.Router()
 
 
 async function controllerGetUsers(req, res){
-    let users = await getAllUsers()
+    let users = await userServices.getUsers()
     if(users){        
         res.json(users)
     }else{
@@ -25,10 +25,10 @@ userRouter.get('', [ authorization([1]), controllerGetUsers ])
 userRouter.get('/:id', async (req,res)=>{
     let id = +req.params.id
     if(isNaN(id)){
-        res.sendStatus(400)
+        res.sendStatus(400).send('Invalid ID')
     }else{
         try{
-            let user = await getUserById(id)
+            let user = await userServices.getUserById(id)
             res.json(user)
         }catch(e){
             res.status(e.status).send(e.message)
@@ -37,10 +37,11 @@ userRouter.get('/:id', async (req,res)=>{
     }
 })
 
+
 userRouter.patch('', [authorization([2])], async (req, res) => {
     try {
         const {body} = req;
-        const update = await updateUser(body);
+        const update = await userServices.updateUser(body);
         res.status(200).json(update);
     }catch (e) {
         res.status(e.status).send(e.message);

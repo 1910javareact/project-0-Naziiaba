@@ -54,7 +54,7 @@ export async function daoGetUsers() {
         if (e === 'No users in database') {
             throw{
                 status: 400,
-                message: 'No users in database'
+                message: 'No user found in database'
             };
         } else {
             throw{
@@ -84,7 +84,7 @@ export async function daoGetUserById(id: number) {
         if (e === 'User does not exist') {
             throw{
                 status: 404,
-                message: 'User not found'
+                message: 'Cannot find the user'
             };
         } else {
             throw{
@@ -104,12 +104,12 @@ export async function daoUpdateUser(newUser: User) {
     try {
         client = await connectionPool.connect();
         client.query('BEGIN');
-        await client.query('update project_0.user set username = $1, password = $2, first_name = $3, last_name = $4, email = $5 where user_id = $6',
+        await client.query('update project0.user set username = $1, password = $2, first_name = $3, last_name = $4, email = $5 where user_id = $6',
             [newUser.username, newUser.password, newUser.firstName, newUser.lastName, newUser.email, newUser.userId]);
-        await client.query('delete from project_0.user_role where user_id = $1',
+        await client.query('delete from project0.user_role where user_id = $1',
             [newUser.userId]);
         for ( const role of newUser.roles) {
-            await client.query('insert into project_0.user_role values ($1,$2)',
+            await client.query('insert into project0.user_role values ($1,$2)',
             [newUser.userId, role.roleId]);
         }
         client.query('COMMIT');

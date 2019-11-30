@@ -8,14 +8,18 @@ export function authorization(roleIds: number[],userId?:boolean){
         //login check
         if(!req.session.user){
             res.status(401).send('Please Login')
-            return
+            return;
         }
+
         
-        if(roleIds.includes(req.session.user.role.roleId)) {
-            isAuth =true
-        }
+         for (const role of req.session.user.roles) {
+            if(roleIds.includes(role.roleId)) {
+                isAuth =true
+            }
+         }
+        
         if(userId){
-            let id = +req.params.id
+            let id = +req.params.userId
             if(!isNaN(id)){
                 if(req.session.user.userId === id) {
                     isAuth = true
@@ -26,7 +30,7 @@ export function authorization(roleIds: number[],userId?:boolean){
         if(isAuth){
             next()
         }else{
-            res.status(401).send('The incoming token has expired')
+            res.status(401).send('The incoming token has expired');
         }
     }
     
