@@ -1,5 +1,4 @@
 import express from 'express'
-
 import { authorization } from '../middleware.ts/auth-middleware'
 import { getAllUsers, getUserById, updateUser } from '../services/user-services'
 
