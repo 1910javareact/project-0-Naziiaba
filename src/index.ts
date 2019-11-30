@@ -11,15 +11,19 @@ const app = express()  //this line builds the application from express
 
 
 app.use(bodyparser.json())
-
-
 app.use(sessionMiddleware)
 
+app.use('/users', userRouter)
+app.use('/reimbursement', reimbursementsRouter)
+
+
+//login
 app.post('/login', async (req,res)=>{
     let {username, password} = req.body;
     if(!username || !password ){
         res.status(400).send('Invalid credentials')
-    }
+    } else{
+
     try{
         let user = await getUserByUsernameAndPassword(username, password)
         req.session.user = user
@@ -27,19 +31,13 @@ app.post('/login', async (req,res)=>{
     }catch(e){
         res.status(e.status).send(e.message)
     }
-    
-
-
+    }
 })
-
-app.use('/users', userRouter)
-
-app.use('/reimbursement', reimbursementsRouter)
 
 
 //now we need to make the server actually run
 //this means the server has to be listening for requests
-app.listen(1776, ()=>{
+app.listen(1880, ()=>{
     console.log('app has started');   
 })
 

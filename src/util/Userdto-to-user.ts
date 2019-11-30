@@ -10,11 +10,17 @@ export function userDTOtoUser(users: UserDTO[]): User {
             role: user.role_title
         });
     }
-    return new User(users[0].user_id, users[0].username, users[0].password, users[0].first_name, users[0].last_name, users[0].email, roles);
+    return new User(users[0].user_id, 
+        users[0].username, 
+        users[0].password, 
+        users[0].first_name, 
+        users[0].last_name, 
+        users[0].email, 
+        roles);
 }
 
 
-// turning into multiple user
+// turning into multiple users
 export function multiUserDTOtoUser(users: UserDTO[]): User[] {
     let currentUser: UserDTO[] = [];
     const result: User[] = [];

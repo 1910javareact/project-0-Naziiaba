@@ -7,14 +7,18 @@ import { authorization } from '../middleware.ts/auth-middleware';
 export const reimbursementsRouter = express.Router()
 
 //finding reimbursements by status
-reimbursementsRouter.get('/status/:statusId', authorization([1]), 
-    async (req, res) => {
-        let statusId = +req.params.statusId
-        if (isNaN(statusId)) {
+reimbursementsRouter.get('/reimbursement/status/:statusId', async (req, res) => {
+    console.log(req.params);
+
+
+        let id = +req.params.statusId;
+        console.log(id);
+
+        if (isNaN(id)) {
             res.status(400).send('Invalid statusId')
         } else {
             try {
-                let reimbursements = await reimbursementsServices.getReimbursementsByStatusId(statusId)
+                let reimbursements = await reimbursementsServices.getReimbursementsByStatusId(id)
                 res.json(reimbursements)
             } catch (e) {
                 res.status(e.status).send(e.message)
