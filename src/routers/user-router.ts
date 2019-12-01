@@ -7,7 +7,6 @@ import * as userServices from '../services/user-services'
 export const userRouter = express.Router()
 
 
-
 async function controllerGetUsers(req, res){
     let users = await userServices.getUsers()
     if(users){        
@@ -18,7 +17,7 @@ async function controllerGetUsers(req, res){
 
 }
 
-userRouter.get('', [ authorization([1]), controllerGetUsers ])
+userRouter.get('',  [authorization([2]), controllerGetUsers])
 
 
 
@@ -31,6 +30,8 @@ userRouter.get('/:id', async (req,res)=>{
             let user = await userServices.getUserById(id)
             res.json(user)
         }catch(e){
+            console.log(e);
+            
             res.status(e.status).send(e.message)
         }
         
@@ -38,7 +39,7 @@ userRouter.get('/:id', async (req,res)=>{
 })
 
 
-userRouter.patch('', [authorization([2])], async (req, res) => {
+userRouter.patch('', [authorization([1])], async (req, res) => {
     try {
         const {body} = req;
         const update = await userServices.updateUser(body);
@@ -47,3 +48,7 @@ userRouter.patch('', [authorization([2])], async (req, res) => {
         res.status(e.status).send(e.message);
     }
 });
+
+
+
+

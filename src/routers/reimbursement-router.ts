@@ -7,7 +7,8 @@ import { authorization } from '../middleware.ts/auth-middleware';
 export const reimbursementsRouter = express.Router()
 
 //finding reimbursements by status
-reimbursementsRouter.get('/reimbursement/status/:statusId', async (req, res) => {
+reimbursementsRouter.get('/status/:statusId', authorization([1], true), 
+    async (req, res) => {
     console.log(req.params);
 
 

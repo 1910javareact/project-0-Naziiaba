@@ -6,6 +6,8 @@ export function getUserByUsernameAndPassword(username:string, password:string):P
     try {
         return daoGetUserByUsernameAndPassword(username, password);
     } catch (e) {
+       
+        
         throw e;
     }
 }
@@ -38,6 +40,7 @@ export async function updateUser(req: User) {
         }
        
         await daoUpdateUser(user);
+        
         return user;
     } catch (e) {
         throw e;

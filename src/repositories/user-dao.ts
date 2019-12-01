@@ -11,7 +11,7 @@ export async function daoGetUserByUsernameAndPassword(username: string, password
     try {
         client = await connectionPool.connect();
 
-        const result = await client.query('SELECT * FROM project0.users NATURAL JOIN project0.user_roles NATURAL JOIN project0.roles WHERE username = $1 and password = $2',
+        const result = await client.query('SELECT * FROM project0.users NATURAL JOIN project0.users_roles NATURAL JOIN project0.roles WHERE username = $1 and password = $2',
             [username, password]);
         if (result.rowCount === 0) {
             throw 'Invalid Credentials';
@@ -44,7 +44,7 @@ export async function daoGetUsers() {
     try {
         client = await connectionPool.connect();
 
-        const result = await client.query('SELECT * FROM project_0.user NATURAL JOIN project_0.user_role NATURAL JOIN project_0.role ORDER BY user_id');
+        const result = await client.query('SELECT * FROM project0.users NATURAL JOIN project0.users_roles NATURAL JOIN project0.roles ORDER BY user_id');
         if (result.rowCount === 0) {
             throw 'No users in database';
         } else {
@@ -72,7 +72,7 @@ export async function daoGetUserById(id: number) {
     let client: PoolClient;
     try {
         client = await connectionPool.connect();
-        const result = await client.query('SELECT * FROM project_0.user NATURAL JOIN project_0.user_role NATURAL JOIN project_0.role WHERE user_id = $1',
+        const result = await client.query('SELECT * FROM project0.users NATURAL JOIN project0.users_roles NATURAL JOIN project0.roles WHERE user_id = $1',
         [id]);
         if (result.rowCount === 0) {
             throw 'User does not exist';
@@ -104,12 +104,12 @@ export async function daoUpdateUser(newUser: User) {
     try {
         client = await connectionPool.connect();
         client.query('BEGIN');
-        await client.query('update project0.user set username = $1, password = $2, first_name = $3, last_name = $4, email = $5 where user_id = $6',
+        await client.query('update project0.users set username = $1, password = $2, firstname = $3, lastname = $4, email = $5 where user_id = $6',
             [newUser.username, newUser.password, newUser.firstName, newUser.lastName, newUser.email, newUser.userId]);
-        await client.query('delete from project0.user_role where user_id = $1',
+        await client.query('delete from project0.users_roles where user_id = $1',
             [newUser.userId]);
         for ( const role of newUser.roles) {
-            await client.query('insert into project0.user_role values ($1,$2)',
+            await client.query('insert into project0.users_roles values ($1,$2)',
             [newUser.userId, role.roleId]);
         }
         client.query('COMMIT');
