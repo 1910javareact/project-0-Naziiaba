@@ -4,6 +4,7 @@ import { userRouter } from './routers/user-router'
 import { getUserByUsernameAndPassword } from './services/user-services'
 import { sessionMiddleware } from './middleware.ts/session-middleware'
 import { reimbursementsRouter } from './routers/reimbursement-router'
+import { corsFilter } from './middleware.ts/cors-middleware'
 
 
 const app = express()  //this line builds the application from express
@@ -11,6 +12,7 @@ const app = express()  //this line builds the application from express
 
 app.use(bodyparser.json())
 app.use(sessionMiddleware)
+app.use(corsFilter)
 
 app.use('/users', userRouter)
 app.use('/reimbursement', reimbursementsRouter)

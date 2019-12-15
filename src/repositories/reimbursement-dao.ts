@@ -10,8 +10,8 @@ export async function daoGetReimbursementsByStatusId(statusId: number):Promise<R
     try{
         client = await connectionPool.connect()
         let result = await client.query('SELECT * FROM project0.reimbursement NATURAL JOIN project0.reimbursement_status NATURAL JOIN project0.reimbursement_type WHERE status_id = $1 ORDER BY date_submitted DESC',
-        [statusId])
-        console.log(result.rows);
+                                        [statusId])
+        //console.log(result.rows);
         
         if(result.rowCount === 0){
             throw 'No Reimbursements By That Status'
@@ -32,7 +32,7 @@ export async function daoGetReimbursementsByStatusId(statusId: number):Promise<R
         }
         
     } finally {
-        client.release()
+        client && client.release()
     }
 }
 
@@ -63,7 +63,7 @@ export async function daoGetReimbursementsByUserId(userId: number):Promise<Reimb
         } 
         }
         finally {
-            client.release()
+            client && client.release()
     }
 }
 //a new reimbersement request
@@ -85,7 +85,7 @@ export async function daoPostReimbersement(post){
             message: 'Internal Server Error'
         }
     }finally{
-        client.release()
+        client && client.release()
     }
 }
 
@@ -95,7 +95,7 @@ export async function daoGetReimbursementsByReimbursementId(reimbursementId: num
     try{
         client = await connectionPool.connect()        
         let result = await client.query('SELECT * FROM project0.reimbursement WHERE reimbursement_id = $1',
-        [reimbursementId])        
+                                         [reimbursementId])        
         if(result.rowCount === 0){
             throw 'Reimbursement Does Not Exist'
         }else{
@@ -114,7 +114,7 @@ export async function daoGetReimbursementsByReimbursementId(reimbursementId: num
             }
         }
     }finally{
-        client.release()
+        client && client.release()
     }
 }
 
@@ -139,6 +139,6 @@ export async function daoUpdateReimbursement(reimbursementUpdate: Reimbursement)
             }
         }
     }finally{
-        client.release()
+        client && client.release()
     }
 }

@@ -63,7 +63,7 @@ export async function daoGetUsers() {
             };
         }
     } finally {
-        client.release();
+        client && client.release();
     }
 }
 
@@ -73,7 +73,7 @@ export async function daoGetUserById(id: number) {
     try {
         client = await connectionPool.connect();
         const result = await client.query('SELECT * FROM project0.users NATURAL JOIN project0.users_roles NATURAL JOIN project0.roles WHERE user_id = $1',
-        [id]);
+                                        [id]);
         if (result.rowCount === 0) {
             throw 'User does not exist';
         } else {
@@ -93,7 +93,7 @@ export async function daoGetUserById(id: number) {
             };
         }
     } finally {
-        client.release();
+        client && client.release();
     }
 }
 
@@ -110,7 +110,7 @@ export async function daoUpdateUser(newUser: User) {
             [newUser.userId]);
         for ( const role of newUser.roles) {
             await client.query('insert into project0.users_roles values ($1,$2)',
-            [newUser.userId, role.roleId]);
+            [newUser.userId, role.roleId]);  
         }
         client.query('COMMIT');
     } catch (e) {
@@ -120,6 +120,13 @@ export async function daoUpdateUser(newUser: User) {
             message: 'Internal Server Error'
         };
     } finally {
-        client.release();
+        client && client.release();
     }
 }
+
+
+
+
+
+// const result = await client.query('SELECT * FROM project0.users NATURAL JOIN project0.users_roles NATURAL JOIN project0.roles WHERE user_id = $1',
+        //     [newUser.roles]);

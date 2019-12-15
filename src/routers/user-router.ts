@@ -3,22 +3,31 @@ import { authorization } from '../middleware.ts/auth-middleware'
 import * as userServices from '../services/user-services'
 
 
-
 export const userRouter = express.Router()
 
 
-async function controllerGetUsers(req, res){
+userRouter.get('',  [authorization([2])], async (req,res) =>{
     let users = await userServices.getUsers()
     if(users){        
         res.json(users)
     }else{
         res.sendStatus(500)
     }
+})
 
-}
+//An example of not using arrow functions
 
-userRouter.get('',  [authorization([2]), controllerGetUsers])
+// async function controllerGetUsers(req, res){
+//     let users = await userServices.getUsers()
+//     if(users){        
+//         res.json(users)
+//     }else{
+//         res.sendStatus(500)
+//     }
 
+// }
+
+// userRouter.get('',  [authorization([2]), controllerGetUsers])
 
 
 userRouter.get('/:id', async (req,res)=>{

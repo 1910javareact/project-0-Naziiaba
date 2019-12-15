@@ -35,6 +35,7 @@ export async function updateUser(req: User) {
         const user = await daoGetUserById(req.userId);
         for (const key in req) {
             if (req[key] !== undefined && user.hasOwnProperty(key)) {
+                // hasOwnProperty returns true 
                 user[key] = req[key];
             }
         }
