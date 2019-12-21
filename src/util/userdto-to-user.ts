@@ -13,8 +13,8 @@ export function userDTOtoUser(users: UserDTO[]): User {
     return new User(users[0].user_id, 
         users[0].username, 
         users[0].password, 
-        users[0].first_name, 
-        users[0].last_name, 
+        users[0].firstname, 
+        users[0].lastname, 
         users[0].email, 
         roles);
 }

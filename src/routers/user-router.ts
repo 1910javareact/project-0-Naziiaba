@@ -6,11 +6,12 @@ import * as userServices from '../services/user-services'
 export const userRouter = express.Router()
 
 
-userRouter.get('',  [authorization([2])], async (req,res) =>{
-    let users = await userServices.getUsers()
-    if(users){        
+userRouter.get('',  [authorization([2])], 
+async (req,res) =>{
+    try {
+    let users = await userServices.getUsers()       
         res.json(users)
-    }else{
+    } catch (e){
         res.sendStatus(500)
     }
 })
